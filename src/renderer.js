@@ -19,9 +19,9 @@ const modal = document.getElementById('codeModal');
 document.addEventListener('DOMContentLoaded', () => {
     initializeEditor();
     initializeResizer();
-    updateStatus('Ready - Enter your Gemini API key and start coding!');
-    addToTerminal('🤖 AI Code Editor initialized. Welcome!', 'ai-log');
-    window.api.on('terminal:closed', (message) => {
+    updateStatus('Github(@Rhishavhere)');
+    addToTerminal('🤖 CodeBlink initialized. Welcome!', 'ai-log');
+    window.api.on('🐢 Terminal:closed', (message) => {
         addToTerminal(message, 'ai-log');
     });
 });
@@ -118,13 +118,13 @@ async function runProgram() {
         lastGeneratedCode = pythonCode;
         addToTerminal('✅ AI interpretation complete!', 'success');
 
-        const processedFileName = `${currentFileName.replace(/\.[^/.]+$/, "")}Processed.py`;
+        const processedFileName = `interpreted_files/${currentFileName.replace(/\.[^/.]+$/, "")}Processed.py`;
         
         // Use IPC to ask the main process to save the file
         const result = await window.api.invoke('file:save', { filePath: processedFileName, content: pythonCode });
 
         if (result.success) {
-            addToTerminal(`💾 Generated file saved: ${result.path}`, 'success');
+            // addToTerminal(`💾 Generated file saved: ${result.path}`, 'success');
             
             // NEW: Send the file path to the main process to be run in an external terminal
             addToTerminal(`🚀 Launching script in new PowerShell window...`, 'ai-log');
@@ -169,22 +169,51 @@ async function handleManualSave() {
 }
 
 
+async function handleFileOpen() {
+    updateStatus('Opening file...', 'loading');
+    
+    try {
+        const result = await window.api.invoke('file:openDialog');
+        
+        if (result) {
+            const { filePath, content } = result;
+            editor.value = content; // Load content into the editor
+            
+            // Update UI with the new file name
+            const fileName = filePath.split('\\').pop().split('/').pop();
+            document.getElementById('tabFileName').textContent = fileName;
+            currentFileName = fileName;
+            
+            // Trigger a refresh of the editor view (line numbers, etc.)
+            updateEditorUI();
+            
+            updateStatus('File opened successfully!', 'success');
+            addToTerminal(`📁 File opened: ${filePath}`, 'success');
+        } else {
+            updateStatus('Open canceled.', '');
+        }
+    } catch (err) {
+        updateStatus('Failed to open file.', 'error');
+        addToTerminal(`❌ Error opening file: ${err.message}`, 'error');
+    }
+}
+
 // --- Gemini API Call (Unchanged) ---
 async function convertToCode(naturalLanguage, apiKey) {
     const prompt = `You are an expert Python code generator. Convert the following natural language to an executable Python script.
     
-Instructions:
-1. Preserve the logical structure.
-2. Handle patterns like "input X as Y", "if X is greater than Y", "print X", and loops.
-3. Make sure numeric inputs are cast to the correct type (e.g., int()).
-4. Return ONLY the raw Python code. Do not include any explanations or markdown formatting like \`\`\`python.
-5. Only use # in case of comments.
-Natural Language Code:
----
-${naturalLanguage}
----
+        Instructions:
+        1. Preserve the logical structure.
+        2. Handle patterns like "input X as Y", "if X is greater than Y", "print X", and loops.
+        3. Make sure numeric inputs are cast to the correct type (e.g., int()).
+        4. Return ONLY the raw Python code. Do not include any explanations or markdown formatting like \`\`\`python.
 
-Python Code:`;
+        Natural Language Code:
+        ---
+        ${naturalLanguage}
+        ---
+
+        Python Code:`;
 
     try {
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
@@ -218,6 +247,7 @@ Python Code:`;
 
 // --- Event Listeners for Buttons and UI Elements ---
 document.getElementById('runBtn').addEventListener('click', runProgram);
+document.getElementById('openBtn').addEventListener('click', handleFileOpen);
 document.getElementById('saveBtn').addEventListener('click', handleManualSave);
 // UPDATED: This now clears the log div
 document.getElementById('clearTerminalBtn').addEventListener('click', () => {
