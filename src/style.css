@@ -160,6 +160,7 @@ body {
   border-right: 1px solid #3e3e42;
   min-width: 50px;
   overflow: hidden;
+  white-space: pre;
 }
 
 .editor-wrapper {
