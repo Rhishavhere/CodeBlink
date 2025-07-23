@@ -12,6 +12,7 @@ function createWindow() {
     const win = new BrowserWindow({
         width: 1200,
         height: 800,
+        title: 'CodeBlink IDE',
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
@@ -49,6 +50,29 @@ function createWindow() {
         }
     });
 
+    ipcMain.handle('file:openDialog', async () => {
+        const { canceled, filePaths } = await dialog.showOpenDialog({
+            title: 'Open Natural Language File',
+            properties: ['openFile'],
+            filters: [
+                { name: 'Natural Language Files', extensions: ['nl', 'txt'] },
+                { name: 'All Files', extensions: ['*'] }
+            ]
+        });
+
+        if (canceled || filePaths.length === 0) {
+            return null; // User canceled or closed the dialog
+        }
+
+        const filePath = filePaths[0];
+        try {
+            const content = await fs.readFile(filePath, 'utf-8');
+            return { filePath, content }; // Return both path and content
+        } catch (err) {
+            console.error('Failed to open the file', err);
+            return null;
+        }
+    });
 
     ipcMain.handle('file:saveDialog', async (event, content) => {
         const { canceled, filePath } = await dialog.showSaveDialog({
