@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Code Text Editor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🤖 AI Code Text Editor</h1>
+        <div class="controls">
+            <button class="save-btn" id="saveBtn">💾 Save</button>
+            <button class="run-btn" id="runBtn">▶️ Run</button>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="editor-panel">
+            <div class="file-tabs">
+                <div class="file-tab active" id="mainTab">
+                    <span id="tabFileName">untitled.nl</span>
+                </div>
+            </div>
+            
+            <div class="editor-container">
+                <div class="line-numbers" id="lineNumbers">1</div>
+                <div class="editor-wrapper">
+                    <div class="editor-highlight" id="editorHighlight"></div>
+                    <textarea 
+                        class="editor" 
+                        id="editor" 
+                        placeholder="Write your code in natural language...&#10;&#10;Example:&#10;input age as a&#10;input name as n&#10;if age is greater than 18&#10;    print n is an adult&#10;else&#10;    print n is not an adult"
+                        spellcheck="false"
+                    ></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="resizer" id="resizer"></div>
+
+        <div class="terminal-panel">
+            <div class="terminal-header">
+                <span>🖥️ Terminal</span>
+                <div class="terminal-controls">
+                    <button class="terminal-btn" id="clearTerminalBtn">Clear</button>
+                    <button class="terminal-btn" id="showCodeBtn">Show Generated Code</button>
+                </div>
+            </div>
+            <div class="terminal" id="terminal"></div>
+        </div>
+    </div>
+
+    <div class="status-bar">
+        <div class="status-left">
+            <span id="statusText">Ready</span>
+            <span id="cursorPosition">Ln 1, Col 1</span>
+        </div>
+        <div class="status-right">
+            <span>Natural Language</span>
+        </div>
+    </div>
+
+    <div class="modal" id="codeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Generated Python Code</h3>
+                <button class="close-modal" id="closeModalBtn">&times;</button>
+            </div>
+            <pre id="generatedCode"></pre>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>
