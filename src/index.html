@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Code Text Editor</title>
+    <title>CodeBlink IDE</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="header">
-        <h1>🤖 AI Code Text Editor</h1>
+        <h1>Code Blink - Run Python As Your Natural Language</h1>
         <div class="controls">
             <button class="save-btn" id="saveBtn">💾 Save</button>
+            <button class="file-input" id="openBtn">📁 Open</button>
             <button class="run-btn" id="runBtn">▶️ Run</button>
         </div>
     </div>
@@ -44,7 +45,7 @@
                 <span>🖥️ Terminal</span>
                 <div class="terminal-controls">
                     <button class="terminal-btn" id="clearTerminalBtn">Clear</button>
-                    <button class="terminal-btn" id="showCodeBtn">Show Generated Code</button>
+                    <button class="terminal-btn" id="showCodeBtn">Show Code</button>
                 </div>
             </div>
             <div class="terminal" id="terminal"></div>
@@ -64,7 +65,7 @@
     <div class="modal" id="codeModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Generated Python Code</h3>
+                <h3>Python Code</h3>
                 <button class="close-modal" id="closeModalBtn">&times;</button>
             </div>
             <pre id="generatedCode"></pre>
